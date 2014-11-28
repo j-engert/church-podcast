@@ -5,11 +5,12 @@ use Facebook\GraphUser;
 use Facebook\FacebookRequest;
 use Facebook\FacebookSession;
 use Facebook\FacebookRedirectLoginHelper;
+use config.php;
 function startsession($rdPath = 'http://podcast.geekjeff.us/login2.php'){
   session_start($rdPath);
   include "vendor/autoload.php";
 
-  FacebookSession::setDefaultApplication('380529472104778', '089df4189fd22acaccb75f581073b772');
+  FacebookSession::setDefaultApplication($GLOBALS('APP_ID'), $GLOBALS('APP_SECRET'));
   if (isset($_SESSION['FBid'])){
     try{
       $session = new FacebookSession($_SESSION['FBid']);
