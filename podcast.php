@@ -37,12 +37,25 @@ function grab_some($db, $start = 0) {
     <source src="{filename}" type="audio/mpeg">
     <a href = {filename}>downlad</a>
     </audio>';
+    $link = false;
     foreach($sermons as $sermon) {
       $player = str_replace('{filename}', $sermon['filename'], $start);
-      $body = str_replace('{audio}', $player, $sermon['body']);
-
+      if(preg_match("/(.*<p>\{audio\}<\/p>)(.*)/", $sermon['body'], $match)){
+        $body = $match[1];
+        if(strlen($match[2]) > 5)
+          $link = true;
+      } elseif (preg_match("/(.*\{audio\})(.*)/", $sermon['body'], $match)){
+        $body = $match[1];
+        if(strlen($match[2]) > 5)
+          $link = true;
+      } else $body = $sermon['body'];
+      if($link){
+        $title = "<a href=\"/text.php?id=" .  $sermon['id'] . 
+        "\">" . $sermon['title'] . "</a>";
+      } else { $title = $sermon['title']; }
+      $body = str_replace('{audio}', $player, $body);
       ?>
-      <H2><?=$sermon['title']?></H2>
+      <H2><?= $title ?></H2>
       <p style='date'><?=strftime("%b %d, %Y", strtotime($sermon['date']))?></p>
       <p style='body'><?=$body?></p>
 
